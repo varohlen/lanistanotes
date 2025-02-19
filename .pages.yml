@@ -1,0 +1,37 @@
+media:
+  input: public
+  output: /
+  categories: [image]
+
+content:
+  - name: changenotes
+    label: Change Notes
+    type: collection
+    path: src/content/changenotes
+    icon: file-text
+    format: yaml-frontmatter
+    fields:
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: date
+        label: Date
+        type: date
+        required: true
+      - name: season
+        label: Season
+        type: number
+        required: true
+      - name: body
+        label: Content
+        type: rich-text
+        required: true
+    view:
+      fields: [title, date, season]
+      primary: title
+      sort: [date, title]
+      default:
+        sort: date
+        order: desc
+    filename: '{primary}'
