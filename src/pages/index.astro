@@ -1,8 +1,33 @@
 ---
+import Layout from '../layouts/Layout.astro';
+import Sidebar from '../components/Sidebar.astro';
 import { getCollection } from 'astro:content';
 
-const notes = await getCollection('changenotes');
-const latestNote = notes.sort((a, b) => b.data.season - a.data.season)[0];
+const allNotes = await getCollection('changenotes');
+const latestNote = allNotes.sort((a, b) => b.data.season - a.data.season)[0];
+const { Content } = await latestNote.render();
 
-return Astro.redirect(`/notes/${latestNote.slug}`, 301);
+function formatDate(date: Date): string {
+  return date.toLocaleDateString('sv-SE').replace(/\//g, '-');
+}
 ---
+
+<Layout title={latestNote.data.title}>
+  <div slot="sidebar">
+    <Sidebar currentNoteId={latestNote.id} />
+  </div>
+
+  <article class="note-content max-w-3xl mx-auto">
+    <header class="article-header backdrop-blur-md p-6 rounded-lg border border-white/10 mb-8 w-full">
+      <h1 class="font-cinzel text-2xl text-center" transition:name="title">{latestNote.data.title}</h1>
+      <div class="mt-2 text-sm opacity-70 text-center" transition:name="metadata">
+        <span class="font-cinzel mr-4">Säsong {latestNote.data.season}</span>
+        <span>{formatDate(latestNote.data.date)}</span>
+      </div>
+    </header>
+
+    <div class="prose prose-invert prose-headings:font-cinzel prose-h2:text-yellow-400 prose-h2:mt-8 prose-h2:mb-4 prose-p:mb-4 prose-ul:mb-4" transition:animate="slide">
+      <Content />
+    </div>
+  </article>
+</Layout>

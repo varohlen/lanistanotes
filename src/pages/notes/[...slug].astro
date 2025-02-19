@@ -14,13 +14,9 @@ export async function getStaticPaths() {
 const { note } = Astro.props;
 const { Content } = await note.render();
 
-const allNotes = await getCollection('changenotes');
-const sortedNotes = allNotes.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-
 function formatDate(date: Date): string {
   return date.toLocaleDateString('sv-SE').replace(/\//g, '-');
 }
-
 ---
 
 <Layout title={note.data.title}>
