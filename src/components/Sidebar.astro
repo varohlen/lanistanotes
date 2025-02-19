@@ -1,0 +1,29 @@
+---
+import { getCollection } from 'astro:content';
+
+const allNotes = await getCollection('changenotes');
+const sortedNotes = allNotes.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+function formatDate(date: Date): string {
+  return date.toLocaleDateString('sv-SE').replace(/\//g, '-');
+}
+
+const { currentNoteId } = Astro.props;
+---
+
+<div transition:persist>
+  <ul class="space-y-2">
+    {sortedNotes.map(note => (
+      <li>
+        <a
+          href={`/notes/${note.slug}`}
+          class={`block p-3 rounded transition-colors hover:bg-white/5 ${note.id === currentNoteId ? 'bg-white/10' : ''}`}
+        >
+          <span class="block font-cinzel text-sm">S{note.data.season}</span>
+          <span class="block text-sm opacity-70">{formatDate(note.data.date)}</span>
+          <span class="block mt-1 font-cinzel">{note.data.title}</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</div>
