@@ -1,15 +1,8 @@
 ---
 import { getCollection } from 'astro:content';
-import Layout from '../layouts/Layout.astro';
 
 const notes = await getCollection('changenotes');
 const latestNote = notes.sort((a, b) => b.data.season - a.data.season)[0];
-const redirectPath = `/notes/${latestNote.slug}`;
----
 
-<Layout title="Lanista Change Notes">
-  <meta http-equiv="refresh" content="0;url={redirectPath}" />
-  <script>
-    window.location.href = "{redirectPath}";
-  </script>
-</Layout>
+return Astro.redirect(`/notes/${latestNote.slug}`, 301);
+---
