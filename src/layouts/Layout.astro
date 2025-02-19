@@ -1,22 +1,142 @@
+---
+import '@fontsource/cinzel';
+import '@fontsource/open-sans';
+import Header from '../components/Header.astro';
+
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
 <!doctype html>
-<html lang="en">
+<html lang="en" class="font-open-sans bg-dark-brown text-parchment">
 	<head>
 		<meta charset="UTF-8" />
+		<meta name="description" content="Lanista Game Change Notes" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+		<title>{title}</title>
+		<style is:global>
+			:root {
+				--color-text: #E8D5B5;
+				--color-background: transparent;
+				--color-panel: rgba(0, 0, 0, 0.85);
+			}
+
+			.light-theme {
+				--color-text: #1a1a1a;
+				--color-background: transparent;
+				--color-panel: rgba(255, 255, 255, 0.5);
+			}
+
+			html {
+				color: var(--color-text);
+				background: var(--color-background);
+				min-height: 100vh;
+			}
+
+			body {
+				min-height: 100vh;
+				background-image: url('/paper-bg.jpg');
+				background-size: cover;
+				background-position: center;
+				background-attachment: fixed;
+				background-repeat: no-repeat;
+			}
+
+			.bg-panel {
+				background-color: var(--color-panel);
+			}
+
+			/* Light theme specific styles */
+			.light-theme .content-area {
+				background-color: white;
+			}
+
+			/* Dark theme specific styles */
+			:root:not(.light-theme) .content-area {
+				background-color: var(--color-panel);
+			}
+
+			/* Override text color for header and sidebar in light theme */
+			.light-theme .header-text,
+			.light-theme .sidebar-text {
+				color: #1a1a1a;
+			}
+
+			/* Article header styles */
+			.article-header {
+				background-color: var(--color-panel);
+			}
+
+			.light-theme .article-header {
+				background-color: #ece4d7;
+				color: black;
+			}
+
+			/* Title and heading styles for light theme */
+			.light-theme .prose h1,
+			.light-theme .prose h2,
+			.light-theme .prose h3,
+			.light-theme .prose h4 {
+				color: #4a2f1d;
+				font-family: 'Cinzel', serif;
+			}
+
+			/* Light theme specific styles */
+			.light-theme .prose {
+				--tw-prose-body: #1a1a1a;
+				--tw-prose-headings: #4a2f1d;
+				--tw-prose-lead: #4a2f1d;
+				--tw-prose-links: #1a1a1a;
+				--tw-prose-bold: #1a1a1a;
+				--tw-prose-counters: #1a1a1a;
+				--tw-prose-bullets: #4a4a4a;
+				--tw-prose-hr: #e5e5e5;
+				--tw-prose-quotes: #1a1a1a;
+				--tw-prose-quote-borders: #e5e5e5;
+				--tw-prose-captions: #6b7280;
+				--tw-prose-code: #1a1a1a;
+				--tw-prose-pre-code: #e5e5e5;
+				--tw-prose-pre-bg: #1a1a1a;
+				--tw-prose-th-borders: #e5e5e5;
+				--tw-prose-td-borders: #e5e5e5;
+			}
+
+			:root:not(.light-theme) .prose {
+				--tw-prose-body: #E8D5B5;
+				--tw-prose-headings: #E8D5B5;
+				--tw-prose-lead: #E8D5B5;
+				--tw-prose-links: #E8D5B5;
+				--tw-prose-bold: #E8D5B5;
+				--tw-prose-counters: #E8D5B5;
+				--tw-prose-bullets: #9ca3af;
+				--tw-prose-hr: rgba(255, 255, 255, 0.1);
+				--tw-prose-quotes: #E8D5B5;
+				--tw-prose-quote-borders: rgba(255, 255, 255, 0.1);
+				--tw-prose-captions: #9ca3af;
+				--tw-prose-code: #E8D5B5;
+				--tw-prose-pre-code: #E8D5B5;
+				--tw-prose-pre-bg: rgba(0, 0, 0, 0.5);
+				--tw-prose-th-borders: rgba(255, 255, 255, 0.1);
+				--tw-prose-td-borders: rgba(255, 255, 255, 0.1);
+			}
+		</style>
 	</head>
 	<body>
-		<slot />
+		<div class="min-h-screen p-4 md:p-8 space-y-4 max-w-7xl mx-auto">
+			<Header />
+			<main class="grid grid-cols-[250px_minmax(0,1fr)] gap-8">
+				<nav class="bg-panel backdrop-blur-md p-8 rounded-lg border border-white/10 sidebar-text">
+					<slot name="sidebar" />
+				</nav>
+				<div class="content-area backdrop-blur-md p-8 rounded-lg border border-white/10">
+					<slot />
+				</div>
+			</main>
+		</div>
 	</body>
 </html>
-
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>

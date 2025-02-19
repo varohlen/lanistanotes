@@ -1,11 +1,48 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const allNotes = await getCollection('changenotes');
+const sortedNotes = allNotes.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const latestNote = sortedNotes[0];
+
+const { Content } = await latestNote.render();
+
+function formatDate(date: Date): string {
+  return date.toLocaleDateString('sv-SE').replace(/\//g, '-');
+}
 ---
 
-<Layout>
-	<Welcome />
+<Layout title={latestNote.data.title}>
+	<div class="note-list" slot="sidebar">
+		<h2 class="mb-6 text-center font-cinzel">Ändringslogg</h2>
+		<ul class="space-y-2">
+			{sortedNotes.map(note => (
+				<li>
+					<a
+						href={`/changenotes/${note.slug}`}
+						class={`block p-3 rounded transition-colors hover:bg-white/5 ${note.slug === latestNote.slug ? 'bg-white/10' : ''}`}
+					>
+						<span class="block font-cinzel text-sm">S{note.data.season}</span>
+						<span class="block text-sm opacity-70">{formatDate(note.data.date)}</span>
+						<span class="block mt-1 font-cinzel">{note.data.title}</span>
+					</a>
+				</li>
+			))}
+		</ul>
+	</div>
+
+	<article class="note-content max-w-3xl mx-auto">
+		<header class="article-header bg-panel backdrop-blur-md p-6 rounded-lg border border-white/10 mb-8 w-full">
+			<h1 class="font-cinzel text-2xl text-center">{latestNote.data.title}</h1>
+			<div class="mt-2 text-sm opacity-70 text-center">
+				<span class="font-cinzel mr-4">Säsong {latestNote.data.season}</span>
+				<span>{formatDate(latestNote.data.date)}</span>
+			</div>
+		</header>
+
+		<div class="prose prose-invert prose-headings:font-cinzel prose-h2:text-yellow-400 prose-h2:mt-8 prose-h2:mb-4 prose-p:mb-4 prose-ul:mb-4">
+			<Content />
+		</div>
+	</article>
 </Layout>

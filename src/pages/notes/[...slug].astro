@@ -1,0 +1,54 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const notes = await getCollection('changenotes');
+  return notes.map(note => ({
+    params: { slug: note.slug },
+    props: { note },
+  }));
+}
+
+const { note } = Astro.props;
+const { Content } = await note.render();
+
+const allNotes = await getCollection('changenotes');
+const sortedNotes = allNotes.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+function formatDate(date: Date): string {
+  return date.toLocaleDateString('sv-SE').replace(/\//g, '-');
+}
+---
+
+<Layout title={note.data.title}>
+  <div class="note-list" slot="sidebar">
+    <ul class="space-y-2">
+      {sortedNotes.map(n => (
+        <li>
+          <a 
+            href={`/notes/${n.slug}`}
+            class={`block p-3 rounded transition-colors hover:bg-white/5 ${n.id === note.id ? 'bg-white/10' : ''}`}
+          >
+            <span class="block font-cinzel text-sm">S{n.data.season}</span>
+            <span class="block text-sm opacity-70">{formatDate(n.data.date)}</span>
+            <span class="block mt-1 font-cinzel">{n.data.title}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <article class="note-content max-w-3xl mx-auto">
+    <header class="article-header bg-panel backdrop-blur-md p-6 rounded-lg border border-white/10 mb-8 w-full">
+      <h1 class="font-cinzel text-2xl text-center">{note.data.title}</h1>
+      <div class="mt-2 text-sm opacity-70 text-center">
+        <span class="font-cinzel mr-4">Säsong {note.data.season}</span>
+        <span>{formatDate(note.data.date)}</span>
+      </div>
+    </header>
+    <div class="prose prose-invert prose-headings:font-cinzel prose-h2:text-yellow-400 prose-h2:mt-8 prose-h2:mb-4 prose-p:mb-4 prose-ul:mb-4">
+      <Content />
+    </div>
+  </article>
+</Layout>
