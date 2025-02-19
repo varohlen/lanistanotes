@@ -9,12 +9,14 @@ content:
     type: collection
     path: src/content/changenotes
     icon: file-text
-    format: yaml-frontmatter
+    format: markdown
+    extension: .md
     fields:
       - name: title
         label: Title
         type: string
         required: true
+        pattern: '^"?[^"]+"?$'
       - name: date
         label: Date
         type: date
@@ -30,8 +32,8 @@ content:
     view:
       fields: [title, date, season]
       primary: title
-      sort: [date, title]
+      sort: [date, season]
       default:
         sort: date
         order: desc
-    filename: '{primary}'
+    filename: '{season}'
