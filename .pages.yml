@@ -9,7 +9,7 @@ content:
     type: collection
     path: src/content/changenotes
     icon: file-text
-    format: markdown
+    format: yaml-frontmatter
     extension: .md
     fields:
       - name: title
