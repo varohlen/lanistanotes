@@ -1,7 +1,6 @@
 media:
   input: public
   output: /
-  categories: [image]
 
 content:
   - name: changenotes
@@ -9,14 +8,11 @@ content:
     type: collection
     path: src/content/changenotes
     icon: file-text
-    format: yaml-frontmatter
-    extension: .md
     fields:
       - name: title
         label: Title
         type: string
         required: true
-        pattern: '^"?[^"]+"?$'
       - name: date
         label: Date
         type: date
@@ -28,12 +24,9 @@ content:
       - name: body
         label: Content
         type: rich-text
-        required: true
     view:
       fields: [title, date, season]
-      primary: title
-      sort: [date, season]
+      sort: [date]
       default:
         sort: date
         order: desc
-    filename: '{season}'
