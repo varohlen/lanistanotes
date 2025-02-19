@@ -1,9 +1,15 @@
 ---
 import { getCollection } from 'astro:content';
 
-const allNotes = await getCollection('changenotes');
-const sortedNotes = allNotes.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-const latestNote = sortedNotes[0];
+const notes = await getCollection('changenotes');
+const latestNote = notes.sort((a, b) => b.data.season - a.data.season)[0];
 
-return Astro.redirect(`/notes/${latestNote.slug}`);
+// Redirect to the latest note
+Astro.response.status = 302;
+Astro.response.headers.set('Location', `/notes/${latestNote.slug}`);
 ---
+
+<script define:vars={{ slug: latestNote.slug }}>
+  // Client-side navigation
+  window.location.href = window.location.pathname.replace(/\/?$/, '/') + 'notes/' + slug;
+</script>
