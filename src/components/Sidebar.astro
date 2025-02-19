@@ -8,22 +8,23 @@ function formatDate(date: Date): string {
   return date.toLocaleDateString('sv-SE').replace(/\//g, '-');
 }
 
-const { currentNoteId } = Astro.props;
-
 // Get current URL to determine active note
 const currentPath = Astro.url.pathname;
+const currentSlug = currentPath.split('/').pop();
+const { currentNoteId } = Astro.props;
+
 ---
 
 <div>
   <ul class="space-y-2">
     {sortedNotes.map(note => {
-      const isActive = currentPath.endsWith(note.slug);
+      const isActive = note.slug === currentSlug;
       return (
         <li>
           <a
             href={`/notes/${note.slug}`}
-            class={`block p-3 rounded transition-colors hover:bg-white/10 
-              ${isActive ? 'bg-white/20 light:bg-black/20' : ''}`}
+            class={`block p-3 rounded transition-colors hover:bg-black/10 
+              ${isActive ? 'bg-black/20 dark:bg-white/20' : ''}`}
           >
             <span class="block font-cinzel text-sm">S{note.data.season}</span>
             <span class="block text-sm opacity-70">{formatDate(note.data.date)}</span>
